@@ -1,4 +1,4 @@
-package com.forumhub.api.dto;
+package com.forumhub.api.dto.authentication;
 
 import jakarta.validation.constraints.NotNull;
 
