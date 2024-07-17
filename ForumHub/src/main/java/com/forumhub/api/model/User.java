@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@Entity(name = "User")
 @Table(name = "users")
-@Entity(name = "Users")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
