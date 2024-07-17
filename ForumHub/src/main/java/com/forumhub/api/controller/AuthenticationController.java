@@ -1,7 +1,7 @@
 package com.forumhub.api.controller;
 
-import com.forumhub.api.dto.AuthenticationDataDTO;
-import com.forumhub.api.dto.TokenDTO;
+import com.forumhub.api.dto.authentication.AuthenticationDataDTO;
+import com.forumhub.api.dto.authentication.TokenDTO;
 import com.forumhub.api.infra.security.TokenService;
 import com.forumhub.api.model.User;
 import jakarta.validation.Valid;
