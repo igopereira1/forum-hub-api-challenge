@@ -9,9 +9,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -29,11 +32,17 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (tokenJWT != null) {
             try {
                 String subject = tokenService.getSubject(tokenJWT);
-                User user = (User) userRepository.findByLogin(subject);
+                Optional<UserDetails> optionalUser = userRepository.findByLogin(subject);
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (optionalUser.isPresent()) {
+                    User user = (User) optionalUser.get();
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    SecurityContextHolder.clearContext();
+                }
             } catch (Exception e) {
                 SecurityContextHolder.clearContext();
             }
