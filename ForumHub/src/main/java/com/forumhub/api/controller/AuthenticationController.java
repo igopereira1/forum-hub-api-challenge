@@ -5,6 +5,7 @@ import com.forumhub.api.dto.authentication.TokenDTO;
 import com.forumhub.api.infra.security.TokenService;
 import com.forumhub.api.model.User;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,12 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("api/login")
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
+    @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager, TokenService tokenService) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
