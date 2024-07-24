@@ -1,6 +1,7 @@
 package com.forumhub.api.service;
 
 import com.forumhub.api.dto.topic.TopicCreateDTO;
+import com.forumhub.api.dto.topic.TopicDetailsDTO;
 import com.forumhub.api.dto.topic.TopicUpdateDTO;
 import com.forumhub.api.model.Course;
 import com.forumhub.api.model.Topic;
@@ -8,6 +9,7 @@ import com.forumhub.api.model.User;
 import com.forumhub.api.repository.CourseRepository;
 import com.forumhub.api.repository.TopicRepository;
 import com.forumhub.api.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,48 +34,55 @@ public class TopicService {
     }
 
     @Transactional
-    public Topic createTopic(TopicCreateDTO topicCreateDTO) {
+    public TopicDetailsDTO createTopic(TopicCreateDTO topicCreateDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
         User author = (User) userRepository.findByLogin(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
-
         Course course = courseRepository.findById(topicCreateDTO.courseId())
                 .orElseThrow(() -> new IllegalArgumentException("Course not found with id: " + topicCreateDTO.courseId()));
-
         Topic topic = new Topic(topicCreateDTO, author, course);
-        return topicRepository.save(topic);
+
+        topic = topicRepository.save(topic);
+
+        return new TopicDetailsDTO(topic);
     }
 
     @Transactional(readOnly = true)
-    public Topic getTopicById(Long id) {
-        return topicRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Topic not found with id: " + id));
+    public TopicDetailsDTO getTopicById(Long id) {
+        Topic topic = topicRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Topic not found with id: " + id));
+
+        return new TopicDetailsDTO(topic);
     }
 
     @Transactional
-    public Topic updateTopic(Long id, TopicUpdateDTO topicUpdateDTO) {
+    public TopicDetailsDTO updateTopic(Long id, TopicUpdateDTO topicUpdateDTO) {
         Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Topic not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Topic not found with id: " + id));
 
-        // Update topic properties
         topic.setTitle(topicUpdateDTO.title());
         topic.setMessage(topicUpdateDTO.message());
 
-        return topicRepository.save(topic);
+        topic = topicRepository.save(topic);
+
+        return new TopicDetailsDTO(topic);
     }
 
     @Transactional
     public void deleteTopic(Long id) {
         Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Topic not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Topic not found with id: " + id));
 
         topicRepository.delete(topic);
     }
 
     @Transactional(readOnly = true)
-    public List<Topic> getAllTopics() {
-        return topicRepository.findAll();
+    public List<TopicDetailsDTO> getAllTopics() {
+        List<Topic> topics = topicRepository.findAll();
+
+        return topics.stream()
+                .map(TopicDetailsDTO::new)
+                .toList();
     }
 }
