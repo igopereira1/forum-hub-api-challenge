@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 public record AnswerCreateDTO(
         @NotBlank
         String message,
-
         @NotNull
         Long topicId
 ) {}
