@@ -7,5 +7,4 @@ public record CourseUpdateDTO(
         String name,
         @NotBlank
         String category
-) {
-}
+) {}
