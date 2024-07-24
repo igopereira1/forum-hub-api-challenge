@@ -3,8 +3,8 @@ package com.forumhub.api.dto.authentication;
 import jakarta.validation.constraints.NotNull;
 
 public record AuthenticationDataDTO(
-        @NotNull
+        @NotNull(message = "Login is required")
         String login,
-        @NotNull
+        @NotNull(message = "Password is required")
         String password
 ) {}
