@@ -1,6 +1,5 @@
 package com.forumhub.api.model;
 
-
 import com.forumhub.api.dto.answer.AnswerCreateDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Answer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
