@@ -34,18 +34,16 @@ public class TopicService {
         String username = authentication.getName();
         User author = (User) userRepository.findByLogin(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
-
         Course course;
+
         try {
-            // Converte a string para o enum Course
             course = Course.valueOf(topicCreateDTO.course().toUpperCase());
         } catch (IllegalArgumentException e) {
-            // Lança uma exceção caso o curso não seja válido
+
             throw new IllegalArgumentException("Invalid course: " + topicCreateDTO.course());
         }
 
-        // Criação do novo tópico
-        Topic topic = new Topic(topicCreateDTO, author, course); // Certifique-se de que o construtor do Topic aceite Course
+        Topic topic = new Topic(topicCreateDTO, author, course);
         topic = topicRepository.save(topic);
 
         return new TopicDetailsDTO(topic);
