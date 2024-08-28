@@ -1,7 +1,6 @@
 package com.forumhub.api.dto.topic;
 
 import com.forumhub.api.dto.answer.AnswerDetailsDTO;
-import com.forumhub.api.dto.course.CourseDetailsDTO;
 import com.forumhub.api.dto.user.UserDetailsDTO;
 import com.forumhub.api.model.Status;
 import com.forumhub.api.model.Topic;
@@ -15,7 +14,7 @@ public record TopicDetailsDTO(
         LocalDateTime createdAt,
         Status status,
         UserDetailsDTO author,
-        CourseDetailsDTO course,
+        String course,
         List<AnswerDetailsDTO> answers
 ) {
     public TopicDetailsDTO(Topic topic) {
@@ -26,7 +25,7 @@ public record TopicDetailsDTO(
                 topic.getCreatedAt(),
                 topic.getStatus(),
                 new UserDetailsDTO(topic.getAuthor()),
-                new CourseDetailsDTO(topic.getCourse()),
+                topic.getCourse().name(),
                 topic.getAnswerList().stream().map(AnswerDetailsDTO::new).toList()
         );
     }

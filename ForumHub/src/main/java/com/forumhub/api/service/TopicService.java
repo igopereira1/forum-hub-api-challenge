@@ -3,10 +3,9 @@ package com.forumhub.api.service;
 import com.forumhub.api.dto.topic.TopicCreateDTO;
 import com.forumhub.api.dto.topic.TopicDetailsDTO;
 import com.forumhub.api.dto.topic.TopicUpdateDTO;
-import com.forumhub.api.model.Course;
 import com.forumhub.api.model.Topic;
 import com.forumhub.api.model.User;
-import com.forumhub.api.repository.CourseRepository;
+import com.forumhub.api.model.Course;
 import com.forumhub.api.repository.TopicRepository;
 import com.forumhub.api.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,22 +14,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-
 
 @Service
 public class TopicService {
 
     private final TopicRepository topicRepository;
     private final UserRepository userRepository;
-    private final CourseRepository courseRepository;
 
     @Autowired
-    public TopicService(TopicRepository topicRepository, UserRepository userRepository, CourseRepository courseRepository) {
+    public TopicService(TopicRepository topicRepository, UserRepository userRepository) {
         this.topicRepository = topicRepository;
         this.userRepository = userRepository;
-        this.courseRepository = courseRepository;
     }
 
     @Transactional
@@ -39,10 +34,18 @@ public class TopicService {
         String username = authentication.getName();
         User author = (User) userRepository.findByLogin(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
-        Course course = courseRepository.findById(topicCreateDTO.courseId())
-                .orElseThrow(() -> new IllegalArgumentException("Course not found with id: " + topicCreateDTO.courseId()));
-        Topic topic = new Topic(topicCreateDTO, author, course);
 
+        Course course;
+        try {
+            // Converte a string para o enum Course
+            course = Course.valueOf(topicCreateDTO.course().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            // Lança uma exceção caso o curso não seja válido
+            throw new IllegalArgumentException("Invalid course: " + topicCreateDTO.course());
+        }
+
+        // Criação do novo tópico
+        Topic topic = new Topic(topicCreateDTO, author, course); // Certifique-se de que o construtor do Topic aceite Course
         topic = topicRepository.save(topic);
 
         return new TopicDetailsDTO(topic);

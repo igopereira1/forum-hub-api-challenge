@@ -27,7 +27,6 @@ public class TopicController {
     public ResponseEntity createTopic(@RequestBody TopicCreateDTO topicCreateDTO, UriComponentsBuilder uriBuilder) {
         TopicDetailsDTO newTopic = topicService.createTopic(topicCreateDTO);
         var uri = uriBuilder.path("/api/topics/{id}").buildAndExpand(newTopic.id()).toUri();
-        System.out.println("URI: " + uri);
         return ResponseEntity.created(uri).body(newTopic);
     }
 

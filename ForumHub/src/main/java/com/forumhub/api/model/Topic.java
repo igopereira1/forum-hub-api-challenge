@@ -35,8 +35,8 @@ public class Topic {
     @JoinColumn(name = "author_id")
     private User author;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Course course;
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

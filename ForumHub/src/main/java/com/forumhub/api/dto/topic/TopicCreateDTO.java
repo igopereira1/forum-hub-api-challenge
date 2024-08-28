@@ -9,5 +9,5 @@ public record TopicCreateDTO(
         @NotBlank
         String message,
         @NotNull
-        Long courseId
+        String course
 ) {}
